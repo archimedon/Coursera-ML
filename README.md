@@ -81,8 +81,8 @@ Stepping through the samples in the training set ( `m` samples), the alogorithm 
 ```
 
 Where:
-  `alpha` - is the learning rate
-  `d/dθ `  - is the partial derivative of the cost function J(Θ_0, Θ_1) with respect to θ
+  - `alpha` - is the learning rate
+  - `d/dθ `  - is the partial derivative of the cost function J(Θ_0, Θ_1) with respect to θ
 
 This algorithm is repeated for all samples, i from 1:m.
 
