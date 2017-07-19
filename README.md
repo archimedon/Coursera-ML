@@ -94,14 +94,30 @@ Observe also, that θ_j plays the role of offset, and that `alpha * cost` affect
 
 The learning rate, alpha, should be determined via some analysis of the data. Alterntively, one can experiment with different learning rates and plot the rate (change per iteration) at which the cost progresses to zero. If the learning rate is too large, it is possible that gradient descent will not converge or diverge, if is is too small it wil take many iterations to find the minimum. The prof. recommends starting with a value like: 0.03, then, if that does not descend fast enough, try 0.1. Alternatively, go in the other direction and try 0.01, etc... - it helps to plot(num_iterations, J(θ)).
 
+
 ### VI. Setting up Octave
 
 
 ## Review
 
-### VII. Linear Algebra
+> ### VII. Linear Algebra
+> ### VIII. Matrices and Vectors
 
-### VIII. Matrices and Vectors
+Only noting useful strategies and outliers here...:
+
+If 
+
+```
+A =				B =
+	| 1 | 1 |			| 2 | 4 | 6 |
+ 	| 2 | 3 |			| 1 | 3 | 3 |
+ 	| 5 | 8 |			
+] 
+```
+All operations 
+
+
+____
 
 ____
 
@@ -116,6 +132,13 @@ Typically we work with the average of sum of the square of errors and is referre
 
 
 ## Week 2
-#### Core concepts: Gradient Descent, Multivariate Linear Regression
-## Synopsis
 
+### I. Features and Polynomial Regression
+### II. Feature Normalization
+### IV. Normal Equation
+
+The Normal Equation, an algebraic approach for determining theta(s), an alternative to Gradient Descent. Useful for small sets of features (100 - 1000, maybe 10000) depending on the data size of the features and how the calculations are being performed. Faster than gradient descent.
+
+(suppositions)
+
+Depending on the language and support for vectorization, eqnNorm would likely make use of cores, threads and proecess in parallel, but yeilds no control for distributing the load. 

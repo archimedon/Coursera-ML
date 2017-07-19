@@ -16,14 +16,8 @@ for iter = 1:num_iters
     %       of the cost function (computeCost) and gradient here.
     %
 
-    newtheta = theta;
+    theta = theta .- alpha * (1/m) * transpose( transpose(  (X * theta) - y  ) * X );
 
-    for ( j = 1:size(X,2) )
-        X_j = X( :, j);
-        newtheta(j, 1) = theta(j, 1) - alpha * ( 1/m * ( transpose(X * theta - y) * X_j));
-    end
-
-    theta = newtheta;
 
     % ============================================================
 
