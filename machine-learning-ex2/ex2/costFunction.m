@@ -22,7 +22,7 @@ grad = zeros(size(theta));
 
 %%%%%%%% A quase literal translation %%%%%%%%%%%%%
 
-hyp = sigmoid( X * theta); % <-- this is sold as, θ' * X , but it never works, only X * θ;
+hyp = sigmoid( X * theta);
 
 J = -1/m * ( y' * log(hyp) + (1 - y') * log(1 - hyp) );
 
