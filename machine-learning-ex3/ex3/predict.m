@@ -21,31 +21,22 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
-[m, n] = size(X);
+% size(Theta1)	= (25 x 401)
+% size(Theta2)	= (10 X 26 )
+% size(X) 		= (5000 x 400 )
 
-% size(Theta1) = (25 x n + 1)
-% size(Theta2) = (10 X 26 )
-
-
-X = [ones(m, 1), X];
-
-%  X: (5000 x n + 1); Theta1: (25 x n + 1)
-hypThetaOfX = sigmoid(X * Theta1' );		% size(hypThetaOfX) = (5000 X 25 )
-
-
-[m, n] = size(hypThetaOfX);
-
-newInputs = [ones(m , 1), hypThetaOfX ];
-% size(newInputs)
 % (5000 X 26 )
-
-predictions = sigmoid(newInputs * Theta2' );
+hyps = calc(calc(X, Theta1), Theta2);
 
 % [hyp_max, hyp_index] . Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
 % column-index is equal to class
-[hyp_max, p] = max(predictions, [], 2);
+[hyp_max, p] = max(hyps, [], 2);
 
-
+function hyps = calc(inputs, theta),
+	[m, n] = size(inputs);
+	inputs = [ones(m, 1), inputs];
+	hyps = sigmoid(inputs * theta');
+end
 
 % =========================================================================
 
