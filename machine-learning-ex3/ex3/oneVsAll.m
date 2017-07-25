@@ -49,36 +49,16 @@ X = [ones(m, 1) X];
 %                 initial_theta, options);
 %
 
-
-% Basic template for Gradient descent algo
-%
-% 	theta_j = theta_j - alpha * dJ(theta)/d(theta)
-%
-%
-% Taking the derivative:
-%
-% 	theta_j = theta_j .- alpha * sum(hOfTOver(X[i]) - y[i] ) * X_j[i]
-
-% θ := θ − α/m * transpose(X) *( g(X*θ) − y⃗ )
-%
-% Need to provide method for:
-%
-% 	dJ(theta)/d(theta)
-%
 initial_theta = zeros(n + 1, 1);
+
 options = optimset('GradObj', 'on', 'MaxIter', 50);
+
 for c = 1:num_labels,
-	
-  [theta] = fmincg(@(t)(lrCostFunction(t, X, (y==c), lambda)), initial_theta, options);
-  all_theta(c, :) = theta';
+	% Create a boolean vector that denotes the value for class 'c'
+	y_vector = (y==c);
+	[theta] = fmincg(@(t)(lrCostFunction(t, X, y_vector, lambda)), initial_theta, options);
+	all_theta(c, :) = theta';
 end
-
-
-
-
-
-
-
 
 
 

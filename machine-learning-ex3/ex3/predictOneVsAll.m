@@ -31,10 +31,12 @@ X = [ones(m, 1) X];
 %       
 
 
+% (5000, 401) * (401, 10)
+hypThetaOfX = sigmoid( X * all_theta' );
 
-
-
-
+% [hyp_max, hyp_index] . Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
+% column-index is equal to class
+[hyp_max, p] = max(hypThetaOfX, [], 2);
 
 % =========================================================================
 

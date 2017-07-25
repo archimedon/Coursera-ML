@@ -36,18 +36,10 @@ grad = zeros(size(theta));
 %           grad = grad + YOUR_CODE_HERE (using the temp variable)
 %
 
-z = X * theta;
-g = @sigmoid;
-hyp = g(z);
+hyp = sigmoid(X * theta);
 zeroOne = noTheta0(theta);
+
 J = 1/m * ( -y' * log(hyp) - (1 - y)' * log(1 - hyp) ) + ( lambda / (2*m)) * (zeroOne' * zeroOne);
-
-% J = -1/m * ( y' * log(hyp) + (1 - y') * log(1 - hyp) );
-
-%	+ ( lamda / 2*m) * sum( theta.^2 );
-
-% grad = 1/m * (hyp - y)' * X + ( lambda / m) * zeroOne;
-
 
 grad = (1/m * (X' * (hyp - y))) + (lambda/m)  * zeroOne;
 
@@ -55,7 +47,6 @@ grad = (1/m * (X' * (hyp - y))) + (lambda/m)  * zeroOne;
 function theta = noTheta0(theta)
 	theta(1) = 0;
 end
-
 
 % =============================================================
 
