@@ -23,12 +23,13 @@ p = zeros(size(X, 1), 1);
 
 % size(Theta1)	= (25 x 401)
 % size(Theta2)	= (10 X 26 )
-% size(X) 		= (5000 x 400 )
+% size(X) 	= (5000 x 400 )
 
-% (5000 X 26 )
-hyps = calc(calc(X, Theta1), Theta2);
+% (5000 X 26 ) X (10 X 26 )'
+hyps = calc(  calc(X, Theta1), Theta2);
 
-% [hyp_max, hyp_index] . Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
+% [hyp_max, hyp_index] .
+% Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
 % column-index is equal to class
 [hyp_max, p] = max(hyps, [], 2);
 
