@@ -113,12 +113,13 @@ Only noting useful strategies and outliers here...:
 If 
 
 ```
-A =				B =
-	| 1 | 1 |			| 2 | 4 | 6 |
- 	| 2 | 3 |			| 1 | 3 | 3 |
- 	| 5 | 8 |			
-] 
+	A =				B =
+		| 1 | 1 |			| 2 | 4 | 6 |
+	 	| 2 | 3 |			| 1 | 3 | 3 |
+	 	| 5 | 8 |			
+	] 
 ```
+
 All operations 
 
 
@@ -327,7 +328,7 @@ A compact form that compresses the 2 equesions (above) into one:
 
 	Cost(hø(x), y) = -y log(hø(x)) - (1 - y ) (log(1 - hø(x)))
 
-Therefore the Cost fucntion ofr logistic regression is:
+Therefore the Cost function for logistic regression is:
 
 		J(Ø) =  1⁄m ∑ Cost( hø(x[¡]), y[¡] )
 
@@ -385,6 +386,7 @@ One strategy is the **One vs All** strategy. The steps are:
 
 
 That is for each class ¡:
+```
 
 hø[¡](x) = P(y = ¡ | x; Ø) (¡ = 1,2,3)
 
@@ -407,7 +409,7 @@ Given a data spread that grows then plateaus, a qudratic function may be the bes
 
 ## Determine the degree of polynomial that will fit, 
 
-#### Addressing ** Overfitting **
+#### Addressing Overfitting
 
 - If we have a lot of feature and too little data, samples ( n versus m)
 
@@ -423,80 +425,5 @@ Options:
   - Regularization works well when we have a lot of slightly useful features.
 
 (from https://www.coursera.org/learn/machine-learning/supplement/VTe37/the-problem-of-overfitting )
-
-
-normal  Equation for Regularized data
-
-Given this for working iwth raw data:
-
-	theta = (X' X)^-1 * X'y
-
-
-For regularized data we use:
-
-	theta = (X' + λ * specialEye(n + 1, n+1) *  X)^-1 * X'y
-
-
-function specialEye {
-	return eye(n+1, n+1) [with top-left digit being zero]) 
-}
-
-
-Recall that if m < n, then XTX is non-invertible. However, when we add the term λ⋅L, then XTX + λ⋅L becomes invertible.
-
-	θ=(X'⋅X + λ⋅L)^−1 X'⋅y
-
-where
-
-	L = specialEye(size(X) + 1);
-
-
-
-
-
-
-
-
-
-
-%
-%	=g(θ' * X )
-%
-% z = θTxg(z)=11+e−z
-%
-%
-%hθ(x)=P(y=1|x;θ)=1−P(y=0|x;θ)P(y=0|x;θ)+P(y=1|x;θ)=1
-%
-
-
-
-%% Stepping through we get
-
-%	gradient(1) = ∂/∂θ_0 J(Θ)
-
-%	gradient(2) = ∂/∂θ_1 J(Θ)
-
-%	gradient(n + 1) = ∂/∂θ_n J(Θ)
-
-
-
-
-% ∂/∂θ J(Θ) = 1/m * sum( (funcOver(X) - y) * X ) + ( lamda / m) * theta
-
-%Therefore
-
-
-%	grad = 1/m * sum( funcOver(X) - y  * X)
-%			+ ( lamda / m) * theta
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%grad = 1/m * sum( funcOver(X) - y  * X)
-%		+ ( lamda / m) * theta
-
-
-
-%J = sum(log(funcOver(X)) - (1 - y) * log(1 - h_theta(x))) / m;
 
 
