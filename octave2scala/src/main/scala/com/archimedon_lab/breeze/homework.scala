@@ -15,7 +15,7 @@ object homework {
   }
 
   def runWeek1() = {
-    val data = load("ex1data1.txt")
+    val data = load("/ex1data1.txt")
     runEx1_1(data)
     runEx1_2(data)
   }

@@ -1,6 +1,7 @@
 <classpath>
   <classpathentry kind="src" path="src/main/scala"/>
   <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/main/resources"/>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
   <classpathentry sourcepath="/Users/ronalddennison/.ivy2/cache/org.scalanlp/breeze_2.12/srcs/breeze_2.12-0.13.1-sources.jar" kind="lib" path="/Users/ronalddennison/.ivy2/cache/org.scalanlp/breeze_2.12/jars/breeze_2.12-0.13.1.jar">
     <attributes>
