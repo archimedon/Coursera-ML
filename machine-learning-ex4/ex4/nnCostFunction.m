@@ -53,19 +53,92 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
-% Part 3: Implement regularization with the cost function and gradients.
-%
-%         Hint: You can implement this around the code for
-%               backpropagation. That is, you can compute the gradients for
-%               the regularization separately and then add them to Theta1_grad
-%               and Theta2_grad from Part 2.
-%
+% 
+% warning: operator -: automatic broadcasting operation applied
+% size Theta1_hyp: (5000, 25)
+% size Theta2_hyp: (5000, 10)
+% size zeroOne: (10, 26)
+% size offset: (26, 10)
+% size regulator: (26, 10)
+% size Theta2_grad: (26, 10)
+
+fprintf("size num_labels: (%d, %d)\n", size(num_labels));
+
+fprintf("size J: (%d, %d)\n", size(J));
+fprintf("size X: (%d, %d)\n", size(X));
+fprintf("size Theta1: (%d, %d)\n", size(Theta1));
+fprintf("size Theta1_hyp: (%d, %d)\n", size(Theta1_hyp));
+fprintf("size Theta2: (%d, %d)\n", size(Theta2));
+fprintf("size y: (%d, %d)\n", size(y));
+fprintf("size zeroOne: (%d, %d)\n", size(zeroOne));
+fprintf("size offset: (%d, %d)\n", size(offset));
+fprintf("size regulator: (%d, %d)\n", size(regulator));
+fprintf("size Theta1_grad: (%d, %d)\n", size(Theta1_grad));
+
+
+
+zeroOne = noTheta0(Theta2);
+Theta2_hyp = sigmoid( pad(Theta1_hyp) * zeroOne');
+offset = (1/m * (pad(Theta1_hyp)' * (Theta2_hyp - y))) ;
+regulator = (lambda/m) * zeroOne';
+Theta2_grad = offset + regulator;
+
+
+
+fprintf("size Theta1_hyp: (%d, %d)\n", size(Theta1_hyp));
+fprintf("size Theta2_hyp: (%d, %d)\n", size(Theta2_hyp));
+fprintf("size zeroOne: (%d, %d)\n", size(zeroOne));
+fprintf("size offset: (%d, %d)\n", size(offset));
+fprintf("size regulator: (%d, %d)\n", size(regulator));
+fprintf("size Theta2_grad: (%d, %d)\n", size(Theta2_grad));
+
+% size X: (5000, 400)
+% size Theta1: (25, 401)
+% size Theta1_hyp: (5000, 25)
+% size Theta2: (10, 26)
+% size y: (5000, 1)
+% size zeroOne: (25, 401)
+% size offset: (401, 25)
+% size regulator: (401, 25)
+% size Theta1_grad: (401, 25)
+
+
+initial_theta = zeros(n + 1, 1);
+
+options = optimset('GradObj', 'on', 'MaxIter', 50);
+
+for c = 1:num_labels,
+	% Create a boolean vector that denotes the value for class 'c'
+	y_vector = (y==c);
+	[theta] = fmincg(@(t)(lrCostFunction(t, X, y_vector, lambda)), initial_theta, options);
+	all_theta(c, :) = theta';
+end
+
+
+
+%% set elem(1) to zero
+function theta = noTheta0(theta)
+	theta(1) = 0;
+end
 
 
 
 
+% [hyp_max, hyp_index] .
+% Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
+% column-index is equal to class
+% [hyp_max, p] = max(hyps, [], 2);
 
+function hyps = calc(inputs, theta),
+	[m, n] = size(inputs);
+	inputs = [ones(m, 1), inputs];
+	hyps = sigmoid(inputs * theta');
+end
+
+function matplus1 = pad(matrix),
+	[m, n] = size(matrix);
+	matplus1 = [ones(m, 1), matrix];
+end
 
 
 
