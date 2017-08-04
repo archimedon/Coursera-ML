@@ -357,7 +357,7 @@ To make a prediction given a new x recall, the logistic hypothesis is wrapped in
 
 A vectorized form for shifting theta:
 
- θ := θ − α⁄m * X' * ( g(X * θ) − y⃗ )
+ θ := θ − α⁄m * X' * ( g(X * θ) − y)
 
 
 ## AdvancedOptimzation Concepts

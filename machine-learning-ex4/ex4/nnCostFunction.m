@@ -53,104 +53,137 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-% 
-% warning: operator -: automatic broadcasting operation applied
-% size Theta1_hyp: (5000, 25)
-% size Theta2_hyp: (5000, 10)
-% size zeroOne: (10, 26)
-% size offset: (26, 10)
-% size regulator: (26, 10)
-% size Theta2_grad: (26, 10)
-
-fprintf("size num_labels: (%d, %d)\n", size(num_labels));
-
-fprintf("size J: (%d, %d)\n", size(J));
-fprintf("size X: (%d, %d)\n", size(X));
-fprintf("size Theta1: (%d, %d)\n", size(Theta1));
-fprintf("size Theta1_hyp: (%d, %d)\n", size(Theta1_hyp));
-fprintf("size Theta2: (%d, %d)\n", size(Theta2));
-fprintf("size y: (%d, %d)\n", size(y));
-fprintf("size zeroOne: (%d, %d)\n", size(zeroOne));
-fprintf("size offset: (%d, %d)\n", size(offset));
-fprintf("size regulator: (%d, %d)\n", size(regulator));
-fprintf("size Theta1_grad: (%d, %d)\n", size(Theta1_grad));
+%
+% Part 3: Implement regularization with the cost function and gradients.
+%
+%         Hint: You can implement this around the code for
+%               backpropagation. That is, you can compute the gradients for
+%               the regularization separately and then add them to Theta1_grad
+%               and Theta2_grad from Part 2.
+%
 
 
+% size X: 5000 x 400
+% size y: 5000 x 1
+% size nn_params: 10285 x 1
+% size input_layer_size: 400.000000
+% size hidden_layer_size: 25.000000
+% size lambda: 0.000000
+% size J: 0.000000
+% size Theta1: 25 x 401
+% size Theta2: 10 x 26
+% size Theta1_grad: 25 x 401
+% size Theta2_grad: 10 x 26
 
-zeroOne = noTheta0(Theta2);
-Theta2_hyp = sigmoid( pad(Theta1_hyp) * zeroOne');
-offset = (1/m * (pad(Theta1_hyp)' * (Theta2_hyp - y))) ;
-regulator = (lambda/m) * zeroOne';
-Theta2_grad = offset + regulator;
+a1 = prependCol(1, X);
+% fprintf('size a1 (expected: 5000x401) : %s' , sizzer(a1));
+
+% (m x n) X (n x h) --> (m x h)
+z2 = a1 * Theta1';
+% fprintf('size z2 (expected: 5000x25) : %s' , sizzer(z2));
+
+a2 = sigmoid(z2);
+% fprintf('size a2 (expected: 5000x25) : %s' , sizzer(a2));
+
+a2 = prependCol(1, a2);
+% fprintf('size a2 (expected: 5000x26) : %s' , sizzer(a2));
+
+z3 = a2 * Theta2';
+% fprintf('size z3 (expected: 5000x10) : %s' , sizzer(z3));
+
+a3 = sigmoid(z3);
+% fprintf('size a3 (expected: 5000x10) : %s' , sizzer(a3));
+
+y_matrix = eye(num_labels)(y,:);
+% fprintf('size y_matrix (expected: 5000x10) : %s' , sizzer(y_matrix));
+
+ya3 = y_matrix .* log(a3);
+ya3_2 = (1 - y_matrix) .* log(1 - a3) ;
+
+J = (-1/m) * ( sum(sum(ya3)) + sum(sum(ya3_2)) );
+% fprintf('size J (expected: 1) : %s' , sizzer(J));
+
+% REGULARIZATION
+regTerm = ( lambda/(2*m)) * (  sum( sum(dropFirstCol(Theta1).^2) ) + sum( sum(dropFirstCol(Theta2).^2) )  );
+J = J + regTerm;
+% fprintf('size J (expected: 1) : %s' , sizzer(J));
+
+% (m x r)
+d3 = a3 - y_matrix;
+% fprintf('size d3 (expected:  5000x10) : %s' , sizzer(d3));
+
+% (m x r) X (r x h) --> (m x h)
+% (5000 x 10) X (10 x 25) --> (5000 x 25)
+d2 = (d3 * dropFirstCol(Theta2)) .* sigmoidGradient(z2);
+% fprintf('size d2 (expected:  5000x25) : %s' , sizzer(d2));
+
+% (h x m) ⋅ (m x n) --> (h x n)
+% (25 x 5000) X (5000 x 401) --> (25 x 401)
+Delta1 = d2' * a1;
+% fprintf('size my Delta1 (expected:  25x401) : %s' , sizzer(Delta1));
+
+% (r x m) X (m x [h+1]) --> (r x [h+1])
+% (10 x 5000) X (5000 x 26) --> (10 x 26)
+Delta2 = d3' * a2;
+% fprintf('size my Delta2 (expected:  10x26) : %s' , sizzer(Delta2));
+
+Theta1_grad = Theta1_grad + (1/m) * Delta1;
+% fprintf('size my Theta1_grad (expected:  25x401) : %s' , sizzer(Theta1_grad));
+
+Theta2_grad = Theta2_grad + (1/m) * Delta2;
+% fprintf('size my Theta2_grad (expected:  10x26) : %s' , sizzer(Theta2_grad));
+
+
+% REGULARIZATION OF GRADIENT
+
+regulator = (lambda/m);
+Theta1 = zeroFirstCol(Theta1);
+% fprintf('size Theta1 (expected:  25x401): %s' , sizzer(Theta1));
+Theta2 = zeroFirstCol(Theta2);
+% fprintf('size Theta2 (expected:  10x26): %s' , sizzer(Theta2));
+
+Theta1_grad = Theta1_grad + (Theta1 .* regulator);
+% fprintf('size Theta1_grad (expected:  25x401) : %s' , sizzer(Theta1_grad));
+
+Theta2_grad = Theta2_grad + (Theta2 .* regulator);
+% fprintf('size Theta2_grad (expected:  10x26) : %s' , sizzer(Theta2_grad));
 
 
 
-fprintf("size Theta1_hyp: (%d, %d)\n", size(Theta1_hyp));
-fprintf("size Theta2_hyp: (%d, %d)\n", size(Theta2_hyp));
-fprintf("size zeroOne: (%d, %d)\n", size(zeroOne));
-fprintf("size offset: (%d, %d)\n", size(offset));
-fprintf("size regulator: (%d, %d)\n", size(regulator));
-fprintf("size Theta2_grad: (%d, %d)\n", size(Theta2_grad));
-
-% size X: (5000, 400)
-% size Theta1: (25, 401)
-% size Theta1_hyp: (5000, 25)
-% size Theta2: (10, 26)
-% size y: (5000, 1)
-% size zeroOne: (25, 401)
-% size offset: (401, 25)
-% size regulator: (401, 25)
-% size Theta1_grad: (401, 25)
-
-
-initial_theta = zeros(n + 1, 1);
-
-options = optimset('GradObj', 'on', 'MaxIter', 50);
-
-for c = 1:num_labels,
-	% Create a boolean vector that denotes the value for class 'c'
-	y_vector = (y==c);
-	[theta] = fmincg(@(t)(lrCostFunction(t, X, y_vector, lambda)), initial_theta, options);
-	all_theta(c, :) = theta';
-end
-
-
+% FUNCTIONS %%
 
 %% set elem(1) to zero
-function theta = noTheta0(theta)
-	theta(1) = 0;
+function slyce = dropFirstCol(matrix)
+slyce = matrix(:,2:end);
 end
 
-
-
-
-% [hyp_max, hyp_index] .
-% Set 'p' to column-index of max hypThetaOfX indicating the classifier with the strongest assertion.
-% column-index is equal to class
-% [hyp_max, p] = max(hyps, [], 2);
-
-function hyps = calc(inputs, theta),
-	[m, n] = size(inputs);
-	inputs = [ones(m, 1), inputs];
-	hyps = sigmoid(inputs * theta');
-end
-
-function matplus1 = pad(matrix),
+%% Prepend a column.
+%% 'num' is the column fill-value
+function padFirst = prependCol(num, matrix),
 	[m, n] = size(matrix);
-	matplus1 = [ones(m, 1), matrix];
+	if (num == 0),
+		padFirst = [zeros(m, 1), matrix];
+	else
+		padFirst = [(ones(m, 1) * num), matrix];
+	end
+end
+
+%% set elem(1) to zero
+function slyce = zeroFirstCol(matrix)
+	slyce = matrix;
+	slyce(:,1) = 0;
 end
 
 
-
-
-
-
-
-
-
-
-
-
+function outp = sizzer(matrix),
+	[m,n] = size(matrix);
+		% outp = sprintf('%d x %d\n', m, n);
+	if (length(matrix) < 11)
+		outp = sprintf('=== (%d x %d) ====\n%s\n', m, n, mat2str(matrix));
+	else
+		outp = sprintf('%d x %d\n', m, n);
+	end
+end
 
 
 % -------------------------------------------------------------

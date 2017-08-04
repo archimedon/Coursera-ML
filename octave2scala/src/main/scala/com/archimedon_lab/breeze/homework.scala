@@ -130,16 +130,18 @@ object homework {
     csvread(new File(fileUrl.getPath), ',')
   }
 
+  def sqECost(X: DenseMatrix[Double], y: DenseMatrix[Double], theta: DenseMatrix[Double]) = {
+    (X * theta) - y
+  }
+  
+  def sigmoidCost(X: DenseMatrix[Double], y: DenseMatrix[Double], theta: DenseMatrix[Double]) = {
+		  (X * theta) - y
+  }
+  
   def computeSqECost(X: DenseMatrix[Double], y: DenseMatrix[Double], theta: DenseMatrix[Double]): Double = {
-    val hypform = ((X * theta) - y).toDenseVector
+    val hypform = sqECost(X, y, theta).toDenseVector
     val sumOfSqrDiffs = hypform.t * hypform
     sumOfSqrDiffs / (2 * X.rows)
-  }
-
-  def computeVecCost(X: DenseMatrix[Double], y: DenseMatrix[Double], theta: DenseMatrix[Double]): Double = {
-		  val hypform = ((X * theta) - y).toDenseVector
-				  val sumOfSqrDiffs = hypform.t * hypform
-				  sumOfSqrDiffs / (2 * X.rows)
   }
 
   def plotScatter(x: DenseMatrix[Double], y: DenseMatrix[Double]): (Figure, Plot) = {

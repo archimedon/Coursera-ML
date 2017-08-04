@@ -20,8 +20,10 @@ g = zeros(size(z));
 
 
 
+% g(z)(1−g(z))
+g = (1 - sigmoid(z)) .* sigmoid(z);
 
-
+%
 
 
 
