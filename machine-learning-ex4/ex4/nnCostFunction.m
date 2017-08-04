@@ -97,13 +97,16 @@ a3 = sigmoid(z3);
 y_matrix = eye(num_labels)(y,:);
 % fprintf('size y_matrix (expected: 5000x10) : %s' , sizzer(y_matrix));
 
-ya3 = y_matrix .* log(a3);
-ya3_2 = (1 - y_matrix) .* log(1 - a3) ;
+m_inv = (1/m);
 
-J = (-1/m) * ( sum(sum(ya3)) + sum(sum(ya3_2)) );
+
+ya3_pt1 = y_matrix .* log(a3);
+ya3_pt2 = (1 - y_matrix) .* log(1 - a3) ;
+
+J = (- m_inv) * ( sum(sum(ya3_pt1)) + sum(sum(ya3_pt2)) );
 % fprintf('size J (expected: 1) : %s' , sizzer(J));
 
-% REGULARIZATION
+% REGULARIZATION OF COST
 regTerm = ( lambda/(2*m)) * (  sum( sum(dropFirstCol(Theta1).^2) ) + sum( sum(dropFirstCol(Theta2).^2) )  );
 J = J + regTerm;
 % fprintf('size J (expected: 1) : %s' , sizzer(J));
@@ -127,10 +130,10 @@ Delta1 = d2' * a1;
 Delta2 = d3' * a2;
 % fprintf('size my Delta2 (expected:  10x26) : %s' , sizzer(Delta2));
 
-Theta1_grad = Theta1_grad + (1/m) * Delta1;
+Theta1_grad = Theta1_grad + m_inv * Delta1;
 % fprintf('size my Theta1_grad (expected:  25x401) : %s' , sizzer(Theta1_grad));
 
-Theta2_grad = Theta2_grad + (1/m) * Delta2;
+Theta2_grad = Theta2_grad + m_inv * Delta2;
 % fprintf('size my Theta2_grad (expected:  10x26) : %s' , sizzer(Theta2_grad));
 
 
