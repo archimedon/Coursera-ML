@@ -14,14 +14,15 @@ g = zeros(size(z));
 
 
 
+% In the lecture:
+%	(@ 5:00) <https://www.coursera.org/learn/machine-learning/lecture/1z9WW/backpropagation-algorithm?t=300>
+% Ng says the derivative of sigmoid(z[l]) written, g'(z[l]) is: a[l] .* (1 - a[l]) ;
+%		where"
+%		a[l] = sigmoid(z[l])
 
-
-
-
-
-
-% g(z)(1−g(z))
-g = (1 - sigmoid(z)) .* sigmoid(z);
+% g(z).*(1−g(z))
+a = sigmoid(z);
+g = a .* (1 - a);
 
 %
 

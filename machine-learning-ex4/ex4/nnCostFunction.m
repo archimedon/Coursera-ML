@@ -76,27 +76,28 @@ Theta2_grad = zeros(size(Theta2));
 % size Theta2_grad: 10 x 26
 
 a1 = prependCol(1, X);
-% fprintf('size a1 (expected: 5000x401) : %s' , sizzer(a1));
+% printf('info [a1] :-  (expected: 5000x401) : %s' , varDump(a1, 1));
 
 % (m x n) X (n x h) --> (m x h)
 z2 = a1 * Theta1';
-% fprintf('size z2 (expected: 5000x25) : %s' , sizzer(z2));
+% printf('info [z2] :-  (expected: 5000x25) : %s' , varDump(z2, 3));
 
 a2 = sigmoid(z2);
-% fprintf('size a2 (expected: 5000x25) : %s' , sizzer(a2));
+% printf('info [a2] :-  (expected: 5000x25) : %s' , varDump(a2, 3));
 
 a2 = prependCol(1, a2);
-% fprintf('size a2 (expected: 5000x26) : %s' , sizzer(a2));
+% printf('Add bias.. size a2 (expected: 5000x26) : %s' , varDump(a2));
 
 z3 = a2 * Theta2';
-% fprintf('size z3 (expected: 5000x10) : %s' , sizzer(z3));
+% printf('info [z3] :-  (expected: 5000x10) : %s' , varDump(z3, 3));
 
 a3 = sigmoid(z3);
-% fprintf('size a3 (expected: 5000x10) : %s' , sizzer(a3));
+% printf('info [a3] :-  (expected: 5000x10) : %s' , varDump(a3, 3));
 
 y_matrix = eye(num_labels)(y,:);
-% fprintf('size y_matrix (expected: 5000x10) : %s' , sizzer(y_matrix));
+% printf('info [y_matrix] :-  (expected: 5000x10) : %s' , varDump(y_matrix));
 
+% Invert for convenience
 m_inv = (1/m);
 
 
@@ -104,65 +105,73 @@ ya3_pt1 = y_matrix .* log(a3);
 ya3_pt2 = (1 - y_matrix) .* log(1 - a3) ;
 
 J = (- m_inv) * ( sum(sum(ya3_pt1)) + sum(sum(ya3_pt2)) );
-% fprintf('size J (expected: 1) : %s' , sizzer(J));
+% printf('info [J] :-  (expected: 1) : %s' , varDump(J));
 
 % REGULARIZATION OF COST
+
+%%%%%
+% First: Don't regularize the bias term (created initiially at X[0]*theta[0], or later at a[0]*theta2[0])
 regTerm = ( lambda/(2*m)) * (  sum( sum(dropFirstCol(Theta1).^2) ) + sum( sum(dropFirstCol(Theta2).^2) )  );
 J = J + regTerm;
-% fprintf('size J (expected: 1) : %s' , sizzer(J));
+% printf('info [J] :-  (expected: 1) : %s' , varDump(J));
 
 % (m x r)
 d3 = a3 - y_matrix;
-% fprintf('size d3 (expected:  5000x10) : %s' , sizzer(d3));
+% printf('info [d3] :-  (expected:  5000x10) : %s' , varDump(d3));
 
 % (m x r) X (r x h) --> (m x h)
 % (5000 x 10) X (10 x 25) --> (5000 x 25)
 d2 = (d3 * dropFirstCol(Theta2)) .* sigmoidGradient(z2);
-% fprintf('size d2 (expected:  5000x25) : %s' , sizzer(d2));
+% printf('info [d2] :-  (expected:  5000x25) : %s' , varDump(d2));
+% EQUIVALENT :
+% d2 = dropFirstCol(  (d3 * Theta2) .* a2 .* (1 - a2)  );
 
+% Iterative form would be:
+%	Delta[l] = Delta[l] + d[l + 1] * transpose(a[l])
+%
 % (h x m) ⋅ (m x n) --> (h x n)
 % (25 x 5000) X (5000 x 401) --> (25 x 401)
-Delta1 = d2' * a1;
-% fprintf('size my Delta1 (expected:  25x401) : %s' , sizzer(Delta1));
+Delta1 = derivCostJ_l1 = d2' * a1;				% A matrix of GRADIENT SUMS for the nodes in layer-1
+% printf('info [my Delta1] :-  (expected:  25x401) : %s' , varDump(Delta1));
 
 % (r x m) X (m x [h+1]) --> (r x [h+1])
 % (10 x 5000) X (5000 x 26) --> (10 x 26)
-Delta2 = d3' * a2;
-% fprintf('size my Delta2 (expected:  10x26) : %s' , sizzer(Delta2));
+Delta2 = derivCostJ_l2 = d3' * a2;				% A matrix of GRADIENT SUMS for the nodes in layer-2
+% printf('info [my Delta2] :-  (expected:  10x26) : %s' , varDump(Delta2));
 
 Theta1_grad = Theta1_grad + m_inv * Delta1;
-% fprintf('size my Theta1_grad (expected:  25x401) : %s' , sizzer(Theta1_grad));
+% printf('info [my Theta1_grad] :-  (expected:  25x401) : %s' , varDump(Theta1_grad));
 
 Theta2_grad = Theta2_grad + m_inv * Delta2;
-% fprintf('size my Theta2_grad (expected:  10x26) : %s' , sizzer(Theta2_grad));
+% printf('info [my Theta2_grad] :-  (expected:  10x26) : %s' , varDump(Theta2_grad));
 
 
 % REGULARIZATION OF GRADIENT
 
 regulator = (lambda/m);
 Theta1 = zeroFirstCol(Theta1);
-% fprintf('size Theta1 (expected:  25x401): %s' , sizzer(Theta1));
+% printf('info [Theta1] :-  (expected:  25x401): %s' , varDump(Theta1));
 Theta2 = zeroFirstCol(Theta2);
-% fprintf('size Theta2 (expected:  10x26): %s' , sizzer(Theta2));
+% printf('info [Theta2] :-  (expected:  10x26): %s' , varDump(Theta2));
 
 Theta1_grad = Theta1_grad + (Theta1 .* regulator);
-% fprintf('size Theta1_grad (expected:  25x401) : %s' , sizzer(Theta1_grad));
+% printf('info [Theta1_grad] :-  (expected:  25x401) : %s' , varDump(Theta1_grad));
 
 Theta2_grad = Theta2_grad + (Theta2 .* regulator);
-% fprintf('size Theta2_grad (expected:  10x26) : %s' , sizzer(Theta2_grad));
+% printf('info [Theta2_grad] :-  (expected:  10x26) : %s' , varDump(Theta2_grad));
 
 
 
 % FUNCTIONS %%
 
-%% set elem(1) to zero
 function slyce = dropFirstCol(matrix)
-slyce = matrix(:,2:end);
+% set elem(1) to zero
+	slyce = matrix(:,2:end);
 end
 
-%% Prepend a column.
-%% 'num' is the column fill-value
 function padFirst = prependCol(num, matrix),
+% Prepend a column.
+% 'num' is the column fill-value
 	[m, n] = size(matrix);
 	if (num == 0),
 		padFirst = [zeros(m, 1), matrix];
@@ -171,20 +180,33 @@ function padFirst = prependCol(num, matrix),
 	end
 end
 
-%% set elem(1) to zero
 function slyce = zeroFirstCol(matrix)
+% set elem(1) to zero
 	slyce = matrix;
 	slyce(:,1) = 0;
 end
 
-
-function outp = sizzer(matrix),
+function outp = varDump(matrix, peek),
+% Show size of variable or values if 10x10 or less.
+%
+% Params:
+%  	matrix 	- the variable
+% 	peek 	- number of rows to show
+%
 	[m,n] = size(matrix);
-		% outp = sprintf('%d x %d\n', m, n);
-	if (length(matrix) < 11)
-		outp = sprintf('=== (%d x %d) ====\n%s\n', m, n, mat2str(matrix));
+	if ( exist("peek", "var") && ~isempty(peek) ),
+		cstring = '%.2f';
+		for ( i = 1:n-1) cstring = [cstring ' %.2f']; end
+		% strcmp(typeinfo(g),'matrix')	
+		therows = sprintf([cstring '\n'], matrix(1:peek,:));
+		outp = sprintf('=== (%d x %d) === The first %d rows:\n%s\n', m, n, peek, therows);
 	else
-		outp = sprintf('%d x %d\n', m, n);
+		% outp = sprintf('%d x %d\n', m, n);
+		if (length(matrix) < 11)
+			outp = sprintf('=== (%d x %d) ===\n%s\n', m, n, mat2str(matrix));
+		else
+			outp = sprintf('%d x %d\n', m, n);
+		end
 	end
 end
 
